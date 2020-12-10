@@ -61,7 +61,12 @@ call getarg(4,buf)
 read(buf,*) threshold
 
 call getarg(5,buf)
-read(buf,*) perct
+if( trim(buf)=='' )then
+  perct=0.30
+else
+  read(buf,*) perct
+endif
+
 
 !==
 fname=trim(camadir)//"/map/"//trim(mapname)//"/params.txt"
