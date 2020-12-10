@@ -50,8 +50,8 @@
 
       !upa_thrs=100000.
       call getarg(4,buf)
-	  if( trim(buf)=='' )then
-		upa_thrs=100000.
+	    if( trim(buf)=='' )then
+		  upa_thrs=100000.
         !stop
       else
         read(buf,*) upa_thrs
