@@ -125,7 +125,7 @@ do k=1,countnum
         end do
     end do
 end do
-print *, 'write basin ID',trim(mapname)
+print *, 'write basin ID ',trim(mapname)
 fname=trim(adjustl(outdir))//"/rivnum_"//trim(mapname)//".bin"
 print *, fname
 open(21,file=fname,form='unformatted',access='direct',recl=4*nx*ny)

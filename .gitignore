@@ -22,4 +22,7 @@ scripts/bin/txt_vector
 
 *.swp
 
-output/*
+output/
+
+*.txt 
+*.bin

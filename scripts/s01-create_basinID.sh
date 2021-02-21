@@ -26,7 +26,8 @@ CAMADIR="/cluster/data6/menaka/CaMa-Flood_v396a_20200514"
 #CAMADIR="/work/a01/modi/cama_v395"
 
 ###SET map name
-map="glb_06min"
+#map="glb_06min"
+map="amz_06min"
 #map="reg_06min_srtm"
 
 ####output
@@ -36,5 +37,5 @@ outdir="../output"
 mkdir $outdir
 
 ###
-echo ./basinID $CAMADIR $map
-time ./basinID $CAMADIR $map
+echo ./basinID $CAMADIR $map $outdir
+time ./basinID $CAMADIR $map $outdir
