@@ -73,15 +73,18 @@ def riveridname(rivername):
          river="Ganges-Brahamaputra"
      return river
 #---------
-mk_dir("../img")
+mk_dir("./img")
 #-------
-CaMa_dir="/cluster/data6/menaka/CaMa-Flood_v396a_20200514"
-mapname="glb_06min"
+# CaMa_dir="/cluster/data6/menaka/CaMa-Flood_v396a_20200514"
+CaMa_dir="/cluster/data6/menaka/CaMa-Flood_v4"
+# mapname="glb_06min"
+# mapname="glb_15min"
+mapname="amz_06min"
 # CaMa_dir="/work/a01/modi/cama_v395"
 # mapname="reg_06min_srtm"
 # nx,ny=(3600,1800)
 # gsize=0.100
-mk_dir("../img/subbasin_"+mapname)
+mk_dir("./img/subbasin_"+mapname)
 #----
 fname=CaMa_dir+"/map/"+mapname+"/params.txt"
 f=open(fname,"r")
@@ -96,10 +99,10 @@ east   = float(filter(None, re.split(" ",lines[5]))[0])
 south  = float(filter(None, re.split(" ",lines[6]))[0])
 north  = float(filter(None, re.split(" ",lines[7]))[0])
 # subbasin
-subbasin="../output/subbasin_"+mapname+".bin"
+subbasin="./output/subbasin_"+mapname+".bin"
 subbasin=np.fromfile(subbasin,np.float32).reshape(ny,nx)#*1.0e3
 # rivnum
-rivnum = "../output/rivnum_"+mapname+".bin"
+rivnum = "./output/rivnum_"+mapname+".bin"
 rivnum = np.fromfile(rivnum,np.int32).reshape(ny,nx)
 #---------
 w=0.15#*2
@@ -120,7 +123,7 @@ latdiff=(urlat-lllat)*4
 #********************
 #major rivers and Idsi
 rivid={}
-fname="../output/river30_id.txt"
+fname="./output/river30_id.txt"
 f = open(fname,"r")
 lines = f.readlines()
 f.close()
@@ -132,7 +135,10 @@ for line in lines:
      #print river
      rivid[river]=riverid
 #---------
-for rivername in ["LENA","NIGER","CONGO","OB","MISSISSIPPI","MEKONG","AMAZONAS"]:
+# rivernames=["AMAZONAS"]
+rivernames=["MISSISSIPPI"]
+# rivernames=["LENA","NIGER","CONGO","OB","MISSISSIPPI","MEKONG","AMAZONAS"]
+for rivername in rivernames:
      data=np.zeros([ny,nx],np.float32)
      c_nextx=(rivnum==rivid[riveridname(rivername)])*1.0
      latlon_river(rivername)
@@ -193,8 +199,8 @@ for rivername in ["LENA","NIGER","CONGO","OB","MISSISSIPPI","MEKONG","AMAZONAS"]
              lon2 = float(line[3]) 
              lat2 = float(line[4])
 
-             iix = int((lon1 + 180.)*int(1.0/gsize)) 
-             iiy = int((-lat1 + 90.)*int(1.0/gsize))
+             iix = int((lon1 - west)*int(1.0/gsize)) 
+             iiy = int((-lat1 + north)*int(1.0/gsize))
 
              if c_nextx[iiy,iix] <= 0:
                  continue
@@ -204,7 +210,7 @@ for rivername in ["LENA","NIGER","CONGO","OB","MISSISSIPPI","MEKONG","AMAZONAS"]
              M.plot([x1,x2],[y1,y2],color="#C0C0C0",linewidth=width,zorder=101,alpha=alpha)
      #M.colorbar(im,"right",size="2%")
      plt.title(rivername)
-     figname="../img/subbasin_"+mapname+"/"+rivername+".png"
+     figname="./img/subbasin_"+mapname+"/"+rivername+".png"
      print figname
      plt.savefig(figname,dpi=800,bbox_inches="tight", pad_inches=0)
 os.system("rm -r tmp*.txt")

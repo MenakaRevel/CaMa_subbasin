@@ -28,15 +28,32 @@ def mk_dir(sdir):
      except:
          pass
 ####################
-mk_dir("../img")
-mapname="glb_06min"
-nx,ny=(3600,1800)
-gsize=0.100
-rivnum = "../output/rivnum_"+mapname+".bin"
+mk_dir("./img")
+CaMa_dir="/cluster/data6/menaka/CaMa-Flood_v410"
+# mapname="glb_06min"
+# mapname="glb_15min"
+# mapname="amz_06min"
+# mapname="conus_06min"
+mapname="yangtze_05min"
+# nx,ny=(3600,1800)
+# gsize=0.100
+#----
+fname=CaMa_dir+"/map/"+mapname+"/params.txt"
+with open(fname,"r") as f:
+  lines=f.readlines()
+#-------
+nx     = int(filter(None, re.split(" ",lines[0]))[0])
+ny     = int(filter(None, re.split(" ",lines[1]))[0])
+gsize  = float(filter(None, re.split(" ",lines[3]))[0])
+west   = float(filter(None, re.split(" ",lines[4]))[0])
+east   = float(filter(None, re.split(" ",lines[5]))[0])
+south  = float(filter(None, re.split(" ",lines[6]))[0])
+north  = float(filter(None, re.split(" ",lines[7]))[0])
+rivnum = "./output/rivnum_"+mapname+".bin"
 rivnum = np.fromfile(rivnum,np.int32).reshape(ny,nx)
 #--major rivers and Ids
 rivid={}
-fname="../output/rivmth_"+mapname+".txt"
+fname="./output/rivmth_"+mapname+".txt"
 f = open(fname,"r")
 lines = f.readlines()
 f.close()
@@ -50,7 +67,7 @@ for line in lines[1::]:
   #print river
   rivid[riverid]=[lon,lat]
 #------
-boundsrivid=np.arange(0.5,31.5,1.0)
+boundsrivid=np.arange(0.5,5.5,1.0)
 cmapS=cm.jet #_r #Set3_r #Dark2 #
 cmapS.set_under("#000000",alpha=0)
 cmapS.set_over("#FFFFFF",alpha=0)
@@ -60,7 +77,8 @@ normriv=colors.BoundaryNorm(boundsrivid,256)
 land="#FFFFFF"#"grey"#
 water="#C0C0C0"#"royalblue"#
 #--
-lllat, urlat, lllon, urlon = -90.0, 90.0, -180.0, 180.0
+# lllat, urlat, lllon, urlon = -90.0, 90.0, -180.0, 180.0
+lllat, urlat, lllon, urlon = south, north, west, east
 #-- meridians and parallels
 meridians = 40.0
 parallels = 20.0
@@ -80,7 +98,7 @@ M.drawcoastlines(color="k",linewidth=0.5, zorder=101)
 M.drawmeridians(np.arange(lllon,urlon+1, meridians), labels=[0, 0, 0, 1], fontsize=10, rotation=0,linewidth=0.5,zorder=104)
 M.drawparallels(np.arange(lllat,urlat+1, parallels), labels=[1, 0, 0, 0], fontsize=10,linewidth=0.5,zorder=104)
 im=M.imshow(ma.masked_less_equal(rivnum,0.0),interpolation="nearest",cmap=cmapS,origin="upper",alpha=1.0,zorder=100,norm=normriv)
-for riverid in np.arange(1,30+1):
+for riverid in np.arange(1,5+1):
      # target pixel
      ix  = rivid[riverid][0]
      iy  = rivid[riverid][1]
@@ -90,8 +108,9 @@ for riverid in np.arange(1,30+1):
      annotate_string="%d"%(riverid)
      plt.annotate(annotate_string,xy=(lon,lat),xycoords="data",horizontalalignment="left",verticalalignment="top",fontsize=12,zorder=106)
 #----------
-cb=plt.colorbar(im,orientation="horizontal",ticks=np.arange(1,30.1,5))#,cax=fig.add_axes([0.1,0.07,0.4,0.01]))
+cb=plt.colorbar(im,orientation="horizontal",ticks=np.arange(1,5.1,11))#,cax=fig.add_axes([0.1,0.07,0.4,0.01]))
 #  cb.set_label(label="Number of SWOT observations per cycle",size="10")
-plt.title("Basin ID - Global", fontsize=10)
-plt.savefig("../img/rivnum_"+mapname+".png",pad_inches=0,bbox_inches="tight",dpi=800)
+plt.title("Basin ID ["+mapname+"]", fontsize=10)
+plt.tight_layout()
+plt.savefig("./img/rivnum_"+mapname+".png",pad_inches=0.05,bbox_inches="tight",dpi=300)
 #plt.show()

@@ -34,6 +34,12 @@ program creat_basinID
       real,allocatable           ::  uparea(:), upareanew(:)!! 
       integer,allocatable        ::  rnk2org(:), org2rnk(:) 
 !===========================================================
+print*, "create basinID"
+print*, "######################################################"
+print*, "create basinID"
+print*, "USAGE: using river mouth grids in nextxy.bin"
+print*, "./script/basinID $CAMADIR $map"
+!===========================================================
 call getarg(1,buf)
 read(buf,"(A)") camadir
 write(*,*) camadir
@@ -125,9 +131,9 @@ do k=1,countnum
         end do
     end do
 end do
-print *, 'write basin ID',trim(mapname)
+print*, 'write basin ID',trim(mapname)
 fname=trim(adjustl(outdir))//"/rivnum_"//trim(mapname)//".bin"
-print *, fname
+print*, fname
 open(21,file=fname,form='unformatted',access='direct',recl=4*nx*ny)
 write(21,rec=1) rivnum
 close(21)

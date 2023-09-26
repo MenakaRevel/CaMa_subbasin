@@ -37,12 +37,13 @@ real                            :: numm,lag_dist, jbsn
 integer                         :: N,num,seq
 integer,dimension(8)            :: xl,yl
 real,dimension(8)               :: al
-!--
-write(*,*) "create subbasin"
+!===========================================================
+print*, "create subbasin"
 print*, "######################################################"
 print*, "create subbasin"
 print*, "USAGE: Input Uparea Threshold [km2]"
-print*, "./subbasin $Map $CaMadir $Outdir $UPA_THRS $PRCT"
+print*, "./script/subbasin $Map $CaMadir $Outdir $UPA_THRS $PRCT"
+!===========================================================
 ! call getarg(1,buf)
 ! read(buf,*) N ! the number for paticular river
 
@@ -210,6 +211,7 @@ basin=0.0
 fname=trim(adjustl(outdir))//"/outsub_"//trim(mapname)//".txt"
 open(72,file=fname,form="formatted",iostat=ios)
 write(72,24)"Id","lon", "lat", "uparea[km2]", "subarea"
+write(*,24)"Id","lon", "lat", "uparea[km2]", "subarea"
 !--
 ! do parallel
 !$omp parallel default(none)&
@@ -319,8 +321,8 @@ do num=1, N !max(rivnum)
     !areal=convarea(1:countp)
     !arealnew=areal
     !print*, xconl
-    print*, "river :", num, countp
-    print*, "============================================"
+    ! print*, "river :", num, countp
+    ! print*, "============================================"
     areal(1)=0.0d0
     do i=2, countp
         !print*, areal(i), xconl(i), xconlist(i)!, yconl(i)
@@ -397,7 +399,7 @@ do num=1, N !max(rivnum)
                     jy=ky
                   end do
                   jbsn=basin(jx,jy)
-                  print*, jx,jy,jbsn
+                  ! print*, jx,jy,jbsn
                   !----------------
                   jx=ix
                   jy=iy
@@ -431,6 +433,7 @@ do num=1, N !max(rivnum)
           end do
         end do
         write(72,25)numm,xconl(rnk2org(i)),yconl(rnk2org(i)),uparea(xconl(rnk2org(i)),yconl(rnk2org(i))),uparea(xconl(rnk2org(i)),yconl(rnk2org(i)))-upbarea
+        write(*,25)numm,xconl(rnk2org(i)),yconl(rnk2org(i)),uparea(xconl(rnk2org(i)),yconl(rnk2org(i))),uparea(xconl(rnk2org(i)),yconl(rnk2org(i)))-upbarea
       end do
      deallocate(xconl,yconl,areal,arealnew,org2rnk,rnk2org) 
 end do
@@ -442,6 +445,7 @@ deallocate(rivid,xlist,ylist,alist)
 deallocate(xconlist,yconlist,convarea)
 !--sub basin--
 fname=trim(adjustl(outdir))//"/subbasin_"//trim(mapname)//".bin"
+print*, fname
 open(84,file=fname,form="unformatted",access="direct",recl=4*nx*ny,status="replace",iostat=ios)
 if(ios==0)then
     write(84,rec=1) subbasin
@@ -451,6 +455,7 @@ end if
 close(84)
 !--sub river--
 fname=trim(adjustl(outdir))//"/subriver_"//trim(mapname)//".bin"
+print*, fname
 open(84,file=fname,form="unformatted",access="direct",recl=4*nx*ny,status="replace",iostat=ios)
 if(ios==0)then
     write(84,rec=1) subriver

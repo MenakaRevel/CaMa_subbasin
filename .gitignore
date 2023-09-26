@@ -1,5 +1,10 @@
 .vscode/settings.json
 img/*
+bin/*
+
+*.png
+*.jpg
+*.pdf
 
 scripts/.vscode/settings.json
 

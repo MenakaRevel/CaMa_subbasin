@@ -16,9 +16,12 @@ import re
 # CaMa_v394
 #CaMa_dir="/work/a02/menaka/CaMa_package_v394_20190508/CaMa_package_v394_20190508/"
 #CaMa_dir="/cluster/data6/menaka/CaMa-Flood_v396a_20200514"
-CaMa_dir="/work/a01/modi/cama_v395"
+# CaMa_dir="/work/a01/modi/cama_v395"
+CaMa_dir="/cluster/data6/menaka/CaMa-Flood_v4"
 #mapname="glb_06min"
-mapname="reg_06min_srtm"
+# mapname="reg_06min_srtm"
+# mapname="glb_15min"
+mapname="amz_06min"
 #nx,ny=(3600,1800)
 #gsize=0.100
 nextxy=CaMa_dir+"/map/"+mapname+"/nextxy.bin"
@@ -45,13 +48,14 @@ north  = float(filter(None, re.split(" ",lines[7]))[0])
 # nextx_v362 = nextxy[0]
 # nexty_v362 = nextxy[1]
 # subbasin
-subbasin="../output/subbasin_"+mapname+".bin"
-#subbasin=np.fromfile(subbasin,np.float32).reshape(ny,nx)#*1.0e3
-subbasin=np.fromfile(subbasin,np.int32).reshape(ny,nx)
+subbasin="./output/subbasin_"+mapname+".bin"
+subbasin=np.fromfile(subbasin,np.float32).reshape(ny,nx)#*1.0e3
+# subbasin=np.fromfile(subbasin,np.int32).reshape(ny,nx)
 
-subcolor="../output/subbasin_"+mapname+".bin"
-#subbasin=np.fromfile(subbasin,np.float32).reshape(ny,nx)#*1.0e3
-subcolor=np.fromfile(subcolor,np.int32).reshape(ny,nx)
+# subcolor="./output/subbasin_"+mapname+".bin"
+# subbasin=np.fromfile(subbasin,np.float32).reshape(ny,nx)#*1.0e3
+# subcolor=np.fromfile(subcolor,np.int32).reshape(ny,nx)
+subcolor=subbasin
 #--
 # pos_v362=ma.masked_where(nextx_v362==-9999, nexty_v362*1440 + nextx_v362).filled(-9999)
 # pos_v394=ma.masked_where(nextx_v394==-9999, nexty_v394*1440 + nextx_v394).filled(-9999)
@@ -76,7 +80,7 @@ epix=int((180+urlon)*int(1.0/gsize))
 plt.close()
 cmap=cm.rainbow_r #viridis_r
 cmap.set_under("w",alpha=0)
-maxbasin=1.200
+maxbasin=1.041
 resol=1
 plt.figure()#figsize=(7*resol,3*resol))
 m = Basemap(projection='cyl',llcrnrlat=lllat+0.1,urcrnrlat=urlat-0.1,llcrnrlon=lllon-0.1,urcrnrlon=urlon+0.1, lat_ts=0,resolution='c')
@@ -86,10 +90,10 @@ m.drawmapboundary(fill_color=water)
 m.drawparallels(np.arange(lllat,urlat+0.1,20), labels = [1,0,0,0], fontsize=8,linewidth=0.1)
 m.drawmeridians(np.arange(lllon,urlon+0.1,40), labels = [0,0,0,1], fontsize=8,linewidth=0.1)
 #im = m.imshow(np.flipud(ratio),vmin=1e-20, vmax=1,interpolation="nearest",cmap=cmap,zorder=100)
-im = m.imshow(ma.masked_greater(ma.masked_less(subbasin,0.0),maxbasin),interpolation="nearest",origin="upper",cmap=cmap,zorder=100)#vmin=0,vmax=1440*720
+im = m.imshow(ma.masked_greater(ma.masked_less(subbasin,0.0),maxbasin),interpolation="nearest",origin="upper",cmap=cmap,zorder=100,vmin=1.0,vmax=maxbasin)
 m.colorbar(im,"right",size="2%")
 plt.title("Subbasin "+mapname)#"nextx_v362")
-figname="../img/subbasin_"+mapname+".png"#"nextx_v362.png"
+figname="./img/subbasin_"+mapname+".png"#"nextx_v362.png"
 plt.savefig(figname,dpi=800,bbox_inches="tight", pad_inches=0)
 
 #plt.show()
